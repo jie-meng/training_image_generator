@@ -1,0 +1,182 @@
+#!/bin/bash
+
+# ffmpeg -i video.mp4 -vf fps=1,crop=1000:1000:40:480,drawbox=260:70:450:660:red -qscale:v 2 %09d.jpg
+# item1_1.png
+
+usage()
+{
+    echo "Uses:"
+    echo
+    echo "Syntax: generate <-fcopd> [-b]"
+    echo "requires:"
+    echo "  -c The crop size and position. eg: '-c 1000:1000:40:480'"
+    echo "  -f The frequency of take one picture, the unit is fps"
+    echo "  -o The object id. eg: '-o 3' thenoutput file name is item3_1.jpg"
+    echo "  -p The picture id. eg: '-p 5' thenoutput file name is item3_5.jpg"
+    echo "options:"
+    echo "  -d The drawbox on the picture, this feture help you preview the object area that is your expectant are. eg: '-d 260:70:450:660'"
+    echo
+    echo "Must:"
+    echo "Please use 'brew install ffmpeg' before use this script"
+    echo 
+    echo "Example: generate jpg set from video.mp4 each second frequency, the jpg size is 1000x1000 and crop position from (40,480), then draw a preview rectangle at (260,70) and size is 450x660, the output filename is item2_4.jpg,item2_5.jpg,item2_6.jpg,item2_n.jpg"
+    echo "generate -c 1000:1000:40:480 -d 260:70:450:660 -f 1 -o 2 -p 4 video.mp4"
+    echo
+}
+
+render_lable_image_xml() {
+    LABLE_IMAGE_ANNOTATION_FOLDER=$1 # cabinet
+    TRAINING_IMAGE_FILE_NAME=$2 # Item2_6.jpg
+    TRAINING_IMAGE_FILE_ABS_PATH=$3 # /Users/ruikai.lithoughtworks.com/Documents/image_capture/tw_funiture/train_images/cabinet/Item2_6.jpg
+    TRAINING_IMAGE_SIZE_WIDTH=$4 # 1000
+    TRAINING_IMAGE_SIZE_HEIGHT=$5 # 1000
+    TRAINING_IMAGE_OBJECT_MIN_X=$6
+    TRAINING_IMAGE_OBJECT_MIN_Y=$7
+    TRAINING_IMAGE_OBJECT_MAX_X=$8
+    TRAINING_IMAGE_OBJECT_MAX_Y=$9
+    LABLE_IMAGE_XML_TEMPLATE=$(cat <<EOF
+<annotation>
+    <folder>${LABLE_IMAGE_ANNOTATION_FOLDER}</folder>
+    <filename>${TRAINING_IMAGE_FILE_NAME}</filename>
+    <path>${TRAINING_IMAGE_FILE_ABS_PATH}</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>${TRAINING_IMAGE_SIZE_WIDTH}</width>
+        <height>${TRAINING_IMAGE_SIZE_HEIGHT}</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>${LABLE_IMAGE_ANNOTATION_FOLDER}</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>${TRAINING_IMAGE_OBJECT_MIN_X}</xmin>
+            <ymin>${TRAINING_IMAGE_OBJECT_MIN_Y}</ymin>
+            <xmax>${TRAINING_IMAGE_OBJECT_MAX_X}</xmax>
+            <ymax>${TRAINING_IMAGE_OBJECT_MAX_Y}</ymax>
+        </bndbox>
+    </object>
+</annotation>
+EOF
+)
+    echo "${LABLE_IMAGE_XML_TEMPLATE}"
+}
+
+# init parameters
+CROP=""
+FPS=""
+OBJECT_ID=""
+PICTURE_ID=""
+DRAWBOX=""
+VIDEO_NAME=""
+
+# check ffmpeg is ready
+if ! command -v ffmpeg &> /dev/null
+then
+    echo "ffmpeg could not be found, please 'brew install ffmpeg'"
+    exit
+fi
+
+# get parameters
+while getopts ":c:f:o:p:d:" options; do
+    case "${options}" in
+        c)
+            CROP=${OPTARG}
+            ;;
+        f)
+            FPS=${OPTARG}
+            ;;
+        o)
+            OBJECT_ID=${OPTARG}
+            ;;
+        p)
+            PICTURE_ID=${OPTARG}
+            ;;
+        d)
+            DRAWBOX=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+# check parameters must to have 
+if [ -z "${CROP}" ] || [ -z "${FPS}" ] || [ -z "${OBJECT_ID}" ] || [ -z "${PICTURE_ID}" ]; then
+    usage
+    exit 0
+fi
+
+VIDEO_NAME="$1"
+
+# create iamges foder
+if ! [ -d "preview_images/" ]; then
+    mkdir preview_images
+fi
+
+if ! [ -d "training_images/" ]; then
+    mkdir training_images
+fi
+
+if ! [ -d "label_image_xml/" ]; then
+    mkdir label_image_xml
+fi
+
+# generate training images
+if [ -z "${DRAWBOX}" ]; then
+    echo "training images generating..."
+    ffmpeg -i "${VIDEO_NAME}" -vf fps="${FPS}",crop="${CROP}" -qscale:v 2 -start_number "${PICTURE_ID}" "training_images/item${OBJECT_ID}_%d.jpg" &> /dev/null
+    echo "training images generated"
+fi
+
+# generate preview images
+if ! [ -z "${DRAWBOX}" ]; then
+    echo "preview images generating..."
+    ffmpeg -i "${VIDEO_NAME}" -vf fps="${FPS}",crop="${CROP}",drawbox="${DRAWBOX}":red -qscale:v 2 -start_number "${PICTURE_ID}" "preview_images/item${OBJECT_ID}_%d.jpg" &> /dev/null
+    echo "preview images generated"
+
+    # confirm generate training images
+    echo "Do you like the preview images? input the number please."
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes)
+                echo "training images generating..."
+                ffmpeg -i "${VIDEO_NAME}" -vf fps="${FPS}",crop="${CROP}" -qscale:v 2 -start_number "${PICTURE_ID}" "training_images/item${OBJECT_ID}_%d.jpg" &> /dev/null
+                echo "training images generated"
+                break
+                ;;
+            No)
+                exit 0
+                ;;
+        esac
+    done
+fi
+
+# generate LableImg xml
+echo "label image xml generating..."
+CURRENT_DIR=`pwd`
+FILES=`ls training_images/`
+FOLDER="${VIDEO_NAME%.*}"
+CROP_ARRAY=(${CROP//:/ })
+WIDTH="${CROP_ARRAY[0]}"
+HEIGHT="${CROP_ARRAY[1]}"
+MIN_X="${CROP_ARRAY[2]}"
+MIN_Y="${CROP_ARRAY[3]}"
+MAX_X=$((CROP_ARRAY[2] + CROP_ARRAY[0]))
+MAX_Y=$((CROP_ARRAY[3] + CROP_ARRAY[1]))
+
+# find all training_images
+for FILE in $FILES
+do
+    XML_FILE_NAME="${FILE%.*}.xml"
+    FILE_PATH="${CURRENT_DIR}/training_images/${FILE}"
+    echo `render_lable_image_xml ${FOLDER} ${FILE} ${FILE_PATH} ${WIDTH} ${HEIGHT} ${MIN_X} ${MIN_Y} ${MAX_X} ${MAX_Y}` > "label_image_xml/${XML_FILE_NAME}"
+done
+echo "label image xml generated"
+
+exit 0
