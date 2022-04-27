@@ -1,4 +1,4 @@
-# ai_image_prepare
+# training_image_generator
 
 ## Prepare
 
@@ -8,4 +8,3 @@ pip install --upgrade pip
 pip install backgroundremover
 
 ```
-

@@ -23,8 +23,7 @@ def retrieve_images_from_phone(root_path: str):
     existed_images = list(filter(lambda x: os.path.isfile('{0}/generated/object/{1}/{2}'.format(root_path, category, x)) and x.endswith('jpg'), os.listdir('{0}/generated/object/{1}'.format(root_path, category))))
     existed_images_count = len(existed_images)
 
-    print('How many images to retrieve (latest)?')
-    count = int(input())
+    count = int(input('How many images to retrieve (latest)?\n'))
     images = items[:count]
 
     for index, image in enumerate(images):
@@ -40,8 +39,7 @@ def retrieve_videos_from_phone(root_path: str):
     existed_backgrounds = list(filter(lambda x: os.path.isfile('{0}/generated/background/video/{1}'.format(root_path, x)) and x.endswith('mp4'), os.listdir('{0}/generated/background/video'.format(root_path))))
     existed_background_count = len(existed_backgrounds)
 
-    print('How many videos to retrieve (latest)?')
-    count = int(input())
+    count = int(input('How many videos to retrieve (latest)?\n'))
     videos = items[:count]
 
     for index, video in enumerate(videos):

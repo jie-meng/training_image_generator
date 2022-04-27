@@ -19,8 +19,7 @@ def generate_background_images(root_path: str):
 
     existed_background_images = list(filter(lambda x: os.path.isfile('{0}/generated/background/image/{1}'.format(root_path, x)) and x.endswith('jpg'), os.listdir('{0}/generated/background/image'.format(root_path))))
 
-    print('Please input crop size: (width:height:x:y)')
-    crop = input()
+    crop = input('Please input crop size: (width:height:x:y)\n')
     is_match = re.match('\d+:\d+:\d+:\d+', crop)
     if not is_match:
         print('Error: crop format should be width:height:x:y')

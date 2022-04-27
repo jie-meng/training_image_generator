@@ -4,6 +4,8 @@ from typing import Callable
 from src.adb import retrieve_images_from_phone, retrieve_videos_from_phone
 from src.ffmpeg import generate_background_images
 from src.image import extract_objects
+from src.image import generate_training_image
+
 
 class Proc(object):
     def __init__(self, name: str, func: Callable[[str], None]):
@@ -27,6 +29,7 @@ if __name__ == "__main__":
     procs.append(Proc('Retrieve videos from android mobile phone', retrieve_videos_from_phone))
     procs.append(Proc('Convert video to images', generate_background_images))
     procs.append(Proc('Extract objects', extract_objects))
+    procs.append(Proc('Generate AI image', generate_training_image))
 
     print('Select:')
     for index, proc in enumerate(procs):
@@ -39,5 +42,5 @@ if __name__ == "__main__":
 
     procs[selection - 1].func(root_path)
 
-    print('done')
+    print('Done')
 
