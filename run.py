@@ -3,8 +3,7 @@ import os
 from typing import Callable
 from src.adb import retrieve_images_from_phone, retrieve_videos_from_phone
 from src.ffmpeg import generate_background_images
-from src.image import extract_objects
-from src.image import generate_training_image
+from src.image import extract_objects, resize_background_image, generate_training_image, cleanup
 
 
 class Proc(object):
@@ -28,8 +27,10 @@ if __name__ == "__main__":
     procs.append(Proc('Retrieve images from android mobile phone', retrieve_images_from_phone))
     procs.append(Proc('Retrieve videos from android mobile phone', retrieve_videos_from_phone))
     procs.append(Proc('Convert video to images', generate_background_images))
+    procs.append(Proc('Resize background image', resize_background_image))
     procs.append(Proc('Extract objects', extract_objects))
     procs.append(Proc('Generate AI image', generate_training_image))
+    procs.append(Proc('Clean up training images', cleanup))
 
     print('Select:')
     for index, proc in enumerate(procs):

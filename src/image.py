@@ -18,7 +18,7 @@ def extract_objects(root_path: str):
 
     percent = input('What is the resize ratio of the objects? (default: 100%)\n')
     if not re.match('\d+%?', percent):
-        print('Error: percent format incorrect')
+        print('Error: ratio format incorrect')
         sys.exit(-1)
 
     percent = percent.replace('%', '')
@@ -40,12 +40,20 @@ def extract_objects(root_path: str):
                 os.system('backgroundremover -i "{0}/generated/object/{1}/{2}" -a -ae 15 -o "{3}"'.format(root_path, category, image, target_image))
                 os.system('convert {0} -trim -resize {1}% +repage {0}'.format(target_image, percent))
 
-def generate_training_image(root_path: str):
-    # clean up
-    os.system('rm {0}/generated/training_image/*.png'.format(root_path))
-    os.system('rm {0}/generated/training_image_with_item_border/*.png'.format(root_path))
-    os.system('rm {0}/generated/training_image_info/*.xml'.format(root_path))
+def resize_background_image(root_path: str):
+    background_images = list(filter(lambda x: x.endswith('.jpg'), os.listdir(root_path + '/generated/background/image')))
 
+    percent = input('What is the resize ratio of the objects? (default: 100%)\n')
+    if not re.match('\d+%?', percent):
+        print('Error: ratio format incorrect')
+        sys.exit(-1)
+
+    for image in background_images:
+        cmd = 'convert {0}/generated/background/image/{1} -resize {2}% {0}/generated/background/image/{1}'.format(root_path, image, percent)
+        print(cmd)
+        os.system(cmd)
+
+def generate_training_image(root_path: str):
     object_categories = list(filter(lambda x: os.path.isdir(root_path + '/generated/extracted_object/' + x), os.listdir(root_path + '/generated/extracted_object')))
     backgrounds = list(filter(lambda x: '{0}/generated/background/image/{1}'.format(root_path, x).endswith('jpg'), os.listdir(root_path + '/generated/background/image')))
 
@@ -122,4 +130,11 @@ def generate_training_image(root_path: str):
         os.system(border_image_cmd)
 
         generate_xml(root_path, CompositeImageInfo(dest_image, bk_wh[0], bk_wh[1], training_items))
+
+
+def cleanup(root_path: str):
+    # clean up
+    os.system('rm {0}/generated/training_image/*.png'.format(root_path))
+    os.system('rm {0}/generated/training_image_with_item_border/*.png'.format(root_path))
+    os.system('rm {0}/generated/training_image_info/*.xml'.format(root_path))
 
