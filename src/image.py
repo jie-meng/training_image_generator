@@ -41,6 +41,11 @@ def extract_objects(root_path: str):
                 os.system('convert {0} -trim -resize {1}% +repage {0}'.format(target_image, percent))
 
 def generate_training_image(root_path: str):
+    # clean up
+    os.system('rm {0}/generated/training_image/*.png'.format(root_path))
+    os.system('rm {0}/generated/training_image_with_item_border/*.png'.format(root_path))
+    os.system('rm {0}/generated/training_image_info/*.xml'.format(root_path))
+
     object_categories = list(filter(lambda x: os.path.isdir(root_path + '/generated/extracted_object/' + x), os.listdir(root_path + '/generated/extracted_object')))
     backgrounds = list(filter(lambda x: '{0}/generated/background/image/{1}'.format(root_path, x).endswith('jpg'), os.listdir(root_path + '/generated/background/image')))
 
