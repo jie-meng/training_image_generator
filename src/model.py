@@ -21,7 +21,7 @@ class TrainingItemInfo(object):
         self.__position = (0, 0)
         self.__width = 0
         self.__height = 0
-        self.__is_truncated = False
+        self.__is_covered = False
 
     @property
     def category(self) -> str:
@@ -56,12 +56,12 @@ class TrainingItemInfo(object):
         self.__height = value
 
     @property
-    def is_truncated(self) -> bool:
-        return self.__is_truncated
+    def is_covered(self) -> bool:
+        return self.__is_covered
 
-    @is_truncated.setter
-    def is_truncated(self, value: bool):
-        self.__is_truncated = value
+    @is_covered.setter
+    def is_covered(self, value: bool):
+        self.__is_covered = value
 
 
 class CompositeImageInfo(object):

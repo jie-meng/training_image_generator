@@ -42,11 +42,13 @@ def generate_xml(root_path: str, composite_image_info: CompositeImageInfo):
         pose_ele.text = 'Unspecified'
 
         truncated_ele = ET.SubElement(object_ele, 'truncated')
-        #  truncated_ele.text = '1' if item.is_truncated else '0'
         truncated_ele.text = '0'
 
         difficult_ele = ET.SubElement(object_ele, 'difficult')
         difficult_ele.text = '0'
+
+        occlude_ele = ET.SubElement(object_ele, 'occlude')
+        occlude_ele.text = '1' if item.is_covered else '0'
 
         bndbox_ele = ET.SubElement(object_ele, 'bndbox')
 

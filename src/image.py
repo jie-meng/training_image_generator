@@ -101,15 +101,15 @@ def generate_training_image(root_path: str):
 
         random.shuffle(training_items)
 
-        # check truncate
-        #  for i, x in enumerate(training_items):
-        #      if i < len(training_items) - 1:
-        #          for y in training_items[i + 1:]:
-        #              is_truncated = is_intersection(x.position[0], x.position[0] + x.width, x.position[1], x.position[1] + x.height,
-        #                              y.position[0], y.position[0] + y.width, y.position[1], y.position[1] + y.height)
-        #              if is_truncated:
-        #                  x.is_truncated = is_truncated
-        #                  break
+        #  check covered
+        for i, x in enumerate(training_items):
+            if i < len(training_items) - 1:
+                for y in training_items[i + 1:]:
+                    is_covered = is_intersection(x.position[0], x.position[0] + x.width, x.position[1], x.position[1] + x.height,
+                                    y.position[0], y.position[0] + y.width, y.position[1], y.position[1] + y.height)
+                    if is_covered:
+                        x.is_covered = is_covered
+                        break
 
         generate_cmd = 'convert {0}/generated/background/image/{1}'.format(root_path, random_background)
         for item in training_items:
