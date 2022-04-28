@@ -25,7 +25,7 @@ Then follow the tips:
 
 ### 1. Retrieve images from android mobile phone
 
-If you want to prepare the images of object __bottle__, take pictures of bottles with your android device. When you captured enough bottle images, connect the android device to your computer, make sure adb works.
+If you want to prepare the images of object __bottle__, take pictures of bottles with your android device (You should always take photo with landscape mode, do not use potrait mode, otherwise the extracting object work will not work as you expected). When you captured enough bottle images, connect the android device to your computer, make sure adb works.
 
 Make a sub dir __bottle__ under the path _generated/object_ before you run `python3 run.py`. Then type __1__ to select 'Retrieve images from android mobile phone'.
 
