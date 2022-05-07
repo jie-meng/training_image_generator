@@ -53,7 +53,7 @@ def resize_background_image(root_path: str):
         print(cmd)
         os.system(cmd)
 
-def generate_training_image(root_path: str):
+def generate_training_image(root_path: str, output_folder_prefix: str):
     object_categories = list(filter(lambda x: os.path.isdir(root_path + '/generated/extracted_object/' + x), os.listdir(root_path + '/generated/extracted_object')))
     backgrounds = list(filter(lambda x: '{0}/generated/background/image/{1}'.format(root_path, x).endswith('jpg'), os.listdir(root_path + '/generated/background/image')))
 
@@ -80,7 +80,7 @@ def generate_training_image(root_path: str):
         print('Error: generate count should not less than 1!')
         sys.exit(-1)
 
-    existing_training_images = list(filter(lambda x: x.endswith('png'), os.listdir('{0}/generated/training_image'.format(root_path))))
+    existing_training_images = list(filter(lambda x: x.endswith('jpg'), os.listdir('{0}/generated/{1}_image'.format(root_path, output_folder_prefix))))
 
     for index in range(0, genrerate_count):
         # random backgrounds
@@ -115,21 +115,21 @@ def generate_training_image(root_path: str):
         for item in training_items:
             generate_cmd += ' {0}/generated/extracted_object/{1}/{2} -geometry +{3}+{4} -composite'.format(root_path, item.category, item.name, item.position[0], item.position[1])
 
-        dest_image = '{0}/generated/training_image/image{1}.png'.format(root_path, len(existing_training_images) + index + 1)
+        dest_image = '{0}/generated/{2}_image/image{1}.jpg'.format(root_path, len(existing_training_images) + index + 1, output_folder_prefix)
         generate_cmd += ' {0}'.format(dest_image)
         print(generate_cmd)
         os.system(generate_cmd)
 
-        border_image_cmd = 'convert {0}/generated/training_image/image{1}.png -fill none -stroke yellow -strokewidth 2 -draw "'.format(root_path, len(existing_training_images) + index + 1)
+        border_image_cmd = 'convert {0}/generated/{2}_image/image{1}.jpg -fill none -stroke yellow -strokewidth 2 -draw "'.format(root_path, len(existing_training_images) + index + 1, output_folder_prefix)
         for item in training_items:
             border_image_cmd += 'rectangle {0},{1} {2},{3} '.format(item.position[0], item.position[1], item.position[0] + item.width, item.position[1] + item.height)
 
-        dest_image_with_border = '{0}/generated/training_image_with_item_border/image{1}.png'.format(root_path, len(existing_training_images) + index + 1)
+        dest_image_with_border = '{0}/generated/{2}_image_with_item_border/image{1}.jpg'.format(root_path, len(existing_training_images) + index + 1, output_folder_prefix)
         border_image_cmd += '" {0}'.format(dest_image_with_border)
         print(border_image_cmd)
         os.system(border_image_cmd)
 
-        generate_xml(root_path, CompositeImageInfo(dest_image, bk_wh[0], bk_wh[1], training_items))
+        generate_xml(root_path, CompositeImageInfo(dest_image, bk_wh[0], bk_wh[1], training_items), output_folder_prefix)
 
 
 def cleanup(root_path: str):
@@ -137,4 +137,12 @@ def cleanup(root_path: str):
     os.system('rm {0}/generated/training_image/*.png'.format(root_path))
     os.system('rm {0}/generated/training_image_with_item_border/*.png'.format(root_path))
     os.system('rm {0}/generated/training_image_info/*.xml'.format(root_path))
+
+    os.system('rm {0}/generated/validation_image/*.png'.format(root_path))
+    os.system('rm {0}/generated/validation_image_with_item_border/*.png'.format(root_path))
+    os.system('rm {0}/generated/validation_image_info/*.xml'.format(root_path))
+
+    os.system('rm {0}/generated/test_image/*.png'.format(root_path))
+    os.system('rm {0}/generated/test_image_with_item_border/*.png'.format(root_path))
+    os.system('rm {0}/generated/test_image_info/*.xml'.format(root_path))
 

@@ -1,6 +1,7 @@
 import sys
 import os
 from typing import Callable
+from functools import partial
 from src.adb import retrieve_images_from_phone, retrieve_videos_from_phone
 from src.ffmpeg import generate_background_images
 from src.image import extract_objects, resize_background_image, generate_training_image, cleanup
@@ -29,8 +30,10 @@ if __name__ == "__main__":
     procs.append(Proc('Convert video to images', generate_background_images))
     procs.append(Proc('Resize background image', resize_background_image))
     procs.append(Proc('Extract objects', extract_objects))
-    procs.append(Proc('Generate AI image', generate_training_image))
-    procs.append(Proc('Clean up training images', cleanup))
+    procs.append(Proc('Generate training image', partial(generate_training_image, output_folder_prefix = 'training')))
+    procs.append(Proc('Generate validation image', partial(generate_training_image, output_folder_prefix = 'validation')))
+    procs.append(Proc('Generate test image', partial(generate_training_image, output_folder_prefix = 'test')))
+    procs.append(Proc('Clean up training, validation and test images', cleanup))
 
     print('Select:')
     for index, proc in enumerate(procs):

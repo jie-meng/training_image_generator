@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from typing import List
 from src.model import CompositeImageInfo
 
-def generate_xml(root_path: str, composite_image_info: CompositeImageInfo):
+def generate_xml(root_path: str, composite_image_info: CompositeImageInfo, output_folder_prefix: str):
     file_basename = os.path.basename(composite_image_info.filename)
 
     root_ele = ET.Element('annotation')
@@ -67,5 +67,5 @@ def generate_xml(root_path: str, composite_image_info: CompositeImageInfo):
     tree = ET.ElementTree(root_ele)
     ET.indent(tree, space='\t', level = 0)
 
-    tree.write('{0}/generated/training_image_info/{1}.xml'.format(root_path, file_basename.replace('.png', '')))
+    tree.write('{0}/generated/{2}_image_info/{1}.xml'.format(root_path, file_basename.replace('.jpg', ''), output_folder_prefix))
 
