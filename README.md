@@ -8,21 +8,21 @@ python3.9+
 
 ```
 brew install ffmpeg imagemagick
-pip3 install --upgrade pip
-pip3 install backgroundremover
 
+pip3 install --upgrade pip
 pip3 install --use-deprecated=legacy-resolver
+
+pip3 install backgroundremover
 pip3 install tflite-model-maker
 pip3 install pycocotools
 
 ```
 
-## How to use
-
-Run script
+## make image
 
 ```
 python3 make_image.py
+
 ```
 
 Then follow the tips:
@@ -99,7 +99,39 @@ Test image info (xml) would be generated under the directory _generated/test_ima
 
 Test image with item border would be generated under the directory _generated/test_image_with_item_border_.
 
-### 7. Clean up training images
+### 9. Clean up training images
 
 Clean up training, validation and test images and related files.
+
+
+## make model 
+
+```
+python3 make_model.py
+
+```
+
+You can have many models, so input the model name.
+
+Then the script will create model based on current training, validation and test images.
+
+## check model
+
+```
+python3 check_model.py
+
+```
+
+### 1. Retrieve check images from android mobile phone
+
+Prepare the images for checking the model generated.
+
+When you see 'How many images to retrieve (lates)?', input the numbers of pictures you took for checking.
+
+
+### 2. Check model
+
+First you should select model for checking.
+
+Then the script will apply model checking with the images under folder _generated/check_image_, result images would under folder _generated/check_result_.
 

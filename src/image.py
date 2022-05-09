@@ -4,9 +4,8 @@ import re
 import random
 import subprocess
 from typing import Tuple
-from src.model import CategoryItems, TrainingItemInfo, CompositeImageInfo
 from src.xml import generate_xml
-from src.utils import is_intersection
+from src.utils import is_intersection, get_object_categories, get_extracted_object_categories, CategoryItems, TrainingItemInfo, CompositeImageInfo
 
 def get_width_height(image) -> Tuple[int]:
     result = subprocess.getoutput('identify -ping -format "%w %h" {0}'.format(image))
@@ -14,7 +13,7 @@ def get_width_height(image) -> Tuple[int]:
     return (int(width_height[0]), int(width_height[1]))
 
 def extract_objects(root_path: str):
-    object_categories = list(filter(lambda x: os.path.isdir(root_path + '/generated/object/' + x), os.listdir(root_path + '/generated/object')))
+    object_categories = get_object_categories(root_path) 
 
     percent = input('What is the resize ratio of the objects? (default: 100%)\n')
     if not re.match('\d+%?', percent):
@@ -54,7 +53,7 @@ def resize_background_image(root_path: str):
         os.system(cmd)
 
 def generate_training_image(root_path: str, output_folder_prefix: str):
-    object_categories = list(filter(lambda x: os.path.isdir(root_path + '/generated/extracted_object/' + x), os.listdir(root_path + '/generated/extracted_object')))
+    object_categories = get_extracted_object_categories(root_path) 
     backgrounds = list(filter(lambda x: '{0}/generated/background/image/{1}'.format(root_path, x).endswith('jpg'), os.listdir(root_path + '/generated/background/image')))
 
     print('Please input what objects should be generated into training images? (e.g. 1,2,3)')

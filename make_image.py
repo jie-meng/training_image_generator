@@ -1,24 +1,10 @@
 import sys
 import os
-from typing import Callable
 from functools import partial
-from src.adb import retrieve_images_from_phone, retrieve_videos_from_phone
+from src.adb import retrieve_images_from_phone, retrieve_videos_from_phone, retrieve_check_images_from_phone
 from src.ffmpeg import generate_background_images
 from src.image import extract_objects, resize_background_image, generate_training_image, cleanup
-
-
-class Proc(object):
-    def __init__(self, name: str, func: Callable[[str], None]):
-        self.__name = name
-        self.__func = func
-
-    @property
-    def name(self) -> str:
-        return self.__name
-
-    @property
-    def func(self) -> Callable[[str], None]:
-        return self.__func
+from src.utils import Proc
 
 
 if __name__ == "__main__":
@@ -33,6 +19,7 @@ if __name__ == "__main__":
     procs.append(Proc('Generate training image', partial(generate_training_image, output_folder_prefix = 'training')))
     procs.append(Proc('Generate validation image', partial(generate_training_image, output_folder_prefix = 'validation')))
     procs.append(Proc('Generate test image', partial(generate_training_image, output_folder_prefix = 'test')))
+    procs.append(Proc('Retrieve check images from android mobile phone', retrieve_check_images_from_phone))
     procs.append(Proc('Clean up training, validation and test images', cleanup))
 
     print('Select:')
@@ -47,4 +34,3 @@ if __name__ == "__main__":
     procs[selection - 1].func(root_path)
 
     print('Done')
-

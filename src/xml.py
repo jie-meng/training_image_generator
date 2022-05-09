@@ -1,7 +1,7 @@
 import os
 import xml.etree.ElementTree as ET
 from typing import List
-from src.model import CompositeImageInfo
+from src.utils import CompositeImageInfo
 
 def generate_xml(root_path: str, composite_image_info: CompositeImageInfo, output_folder_prefix: str):
     file_basename = os.path.basename(composite_image_info.filename)

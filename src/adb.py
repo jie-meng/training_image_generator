@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+from src.utils import get_object_categories
 
 def retrieve_images_from_phone(root_path: str):
     result = subprocess.getoutput('adb shell ls /sdcard/DCIM/Camera')
@@ -9,7 +10,7 @@ def retrieve_images_from_phone(root_path: str):
     items = list(filter(lambda x: x.endswith('jpg') and x.startswith('IMG'), items))
 
     print('What is the category of the object?')
-    object_categories = list(filter(lambda x: os.path.isdir(root_path + '/generated/object/' + x), os.listdir(root_path + '/generated/object')))
+    object_categories = get_object_categories(root_path)
     for index, item in enumerate(object_categories):
         print('{0}. {1}'.format(index + 1, item))
 
@@ -45,3 +46,17 @@ def retrieve_videos_from_phone(root_path: str):
     for index, video in enumerate(videos):
         os.system('adb pull /sdcard/DCIM/Camera/{0} {1}/generated/background/video/background_{2}.mp4'.format(video, root_path, index + existed_background_count + 1))
 
+def retrieve_check_images_from_phone(root_path: str):
+    result = subprocess.getoutput('adb shell ls /sdcard/DCIM/Camera')
+    items = result.split('\n')
+    items.sort(reverse = True)
+    items = list(filter(lambda x: x.endswith('jpg') and x.startswith('IMG'), items))
+
+    existed_images = list(filter(lambda x: os.path.isfile('{0}/generated/check_image/{1}'.format(root_path, x)) and x.endswith('jpg'), os.listdir('{0}/generated/check_image'.format(root_path))))
+    existed_images_count = len(existed_images)
+
+    count = int(input('How many images to retrieve (latest)?\n'))
+    images = items[:count]
+
+    for index, image in enumerate(images):
+        os.system('adb pull /sdcard/DCIM/Camera/{0} {1}/generated/check_image/image_{2}.jpg'.format(image, root_path, index + existed_images_count + 1))
