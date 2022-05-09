@@ -3,6 +3,7 @@ import sys
 import subprocess
 from src.utils import get_object_categories
 
+
 def retrieve_images_from_phone(root_path: str):
     result = subprocess.getoutput('adb shell ls /sdcard/DCIM/Camera')
     items = result.split('\n')
@@ -60,3 +61,4 @@ def retrieve_check_images_from_phone(root_path: str):
 
     for index, image in enumerate(images):
         os.system('adb pull /sdcard/DCIM/Camera/{0} {1}/generated/check_image/image_{2}.jpg'.format(image, root_path, index + existed_images_count + 1))
+

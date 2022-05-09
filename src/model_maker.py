@@ -1,8 +1,6 @@
 from cProfile import label
 import sys
 import tensorflow as tf
-from tflite_model_maker.config import QuantizationConfig
-from tflite_model_maker.config import ExportFormat
 from tflite_model_maker import model_spec
 from tflite_model_maker import object_detector
 from src.utils import get_label_map
@@ -34,7 +32,7 @@ def make_model(root_path: str):
 
     validation_data = object_detector.DataLoader.from_pascal_voc(images_dir = '{0}/generated/validation_image'.format(root_path),
                                                                  annotations_dir = '{0}/generated/validation_image_info'.format(root_path),
-                                                                 label_map={ 1: 'chair', 2: 'bottle' })
+                                                                 label_map=label_map)
 
     test_data = object_detector.DataLoader.from_pascal_voc(images_dir = '{0}/generated/test_image'.format(root_path),
                                                            annotations_dir = '{0}/generated/test_image_info'.format(root_path),

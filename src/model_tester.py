@@ -21,7 +21,6 @@ def preprocess_image(image_path, input_size):
 
 def detect_objects(interpreter, image, threshold, classes):
   """Returns a list of detection results, each a dictionary of object info."""
-
   signature_fn = interpreter.get_signature_runner()
 
   # Feed the input image to the model
@@ -91,8 +90,6 @@ def run_odt_and_draw_results(image_path, interpreter, threshold, classes):
 def test(root_path: str):
   #@title Run object detection and show the detection results
   DETECTION_THRESHOLD = 0.3
-
-  TEMP_FILE = '{0}/generated/check_image/image_3.jpg'.format(root_path)
 
   models = list(filter(lambda x: x.endswith('.tflite'), os.listdir(root_path + '/generated/model')))
   models.sort()
