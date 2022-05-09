@@ -112,7 +112,7 @@ def test(root_path: str):
 
   check_images = list(filter(lambda x: x.endswith('.jpg'), os.listdir('{0}/generated/check_image'.format(root_path))))
   for image in check_images:
-    check_result_file = '{0}/generated/check_result/{1}'.format(root_path, image)
+    check_result_file = '{0}/generated/check_result/{1}_{2}'.format(root_path, os.path.splitext(model)[0], image)
     if not os.path.isfile(check_result_file):
       # Run inference and draw detection result on the local copy of the original file
       detection_result_image = run_odt_and_draw_results(
@@ -126,4 +126,3 @@ def test(root_path: str):
       output_im = Image.fromarray(detection_result_image)
       output_im.save(check_result_file)
       output_im.close()
-

@@ -1,7 +1,7 @@
 import sys
 import os
 from functools import partial
-from src.adb import retrieve_images_from_phone, retrieve_videos_from_phone, retrieve_check_images_from_phone
+from src.adb import retrieve_images_from_phone, retrieve_videos_from_phone
 from src.ffmpeg import generate_background_images
 from src.image import extract_objects, resize_background_image, generate_training_image, cleanup
 from src.utils import Proc
@@ -19,7 +19,6 @@ if __name__ == "__main__":
     procs.append(Proc('Generate training image', partial(generate_training_image, output_folder_prefix = 'training')))
     procs.append(Proc('Generate validation image', partial(generate_training_image, output_folder_prefix = 'validation')))
     procs.append(Proc('Generate test image', partial(generate_training_image, output_folder_prefix = 'test')))
-    procs.append(Proc('Retrieve check images from android mobile phone', retrieve_check_images_from_phone))
     procs.append(Proc('Clean up training, validation and test images', cleanup))
 
     print('Select:')

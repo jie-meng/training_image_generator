@@ -23,7 +23,7 @@ def extract_objects(root_path: str):
     percent = percent.replace('%', '')
 
     for index, category in enumerate(object_categories):
-        images = list(filter(lambda x: '{0}/generated/object/{1}/{2}'.format(root_path, category, x).endswith('jpg'), os.listdir('{0}/generated/object/{1}'.format(root_path, category))))
+        images = list(filter(lambda x: '{0}/generated/object/{1}/{2}'.format(root_path, category, x).endswith('.jpg'), os.listdir('{0}/generated/object/{1}'.format(root_path, category))))
         if len(images) > 0:
             target_folder = '{0}/generated/extracted_object/{1}'.format(root_path, category)
             if not os.path.isdir(target_folder):
@@ -79,7 +79,7 @@ def generate_training_image(root_path: str, output_folder_prefix: str):
         print('Error: generate count should not less than 1!')
         sys.exit(-1)
 
-    existing_training_images = list(filter(lambda x: x.endswith('jpg'), os.listdir('{0}/generated/{1}_image'.format(root_path, output_folder_prefix))))
+    existing_training_images = list(filter(lambda x: x.endswith('.jpg'), os.listdir('{0}/generated/{1}_image'.format(root_path, output_folder_prefix))))
 
     for index in range(0, genrerate_count):
         # random backgrounds
@@ -133,15 +133,15 @@ def generate_training_image(root_path: str, output_folder_prefix: str):
 
 def cleanup(root_path: str):
     # clean up
-    os.system('rm {0}/generated/training_image/*.png'.format(root_path))
-    os.system('rm {0}/generated/training_image_with_item_border/*.png'.format(root_path))
+    os.system('rm {0}/generated/training_image/*.jpg'.format(root_path))
+    os.system('rm {0}/generated/training_image_with_item_border/*.jpg'.format(root_path))
     os.system('rm {0}/generated/training_image_info/*.xml'.format(root_path))
 
-    os.system('rm {0}/generated/validation_image/*.png'.format(root_path))
-    os.system('rm {0}/generated/validation_image_with_item_border/*.png'.format(root_path))
+    os.system('rm {0}/generated/validation_image/*.jpg'.format(root_path))
+    os.system('rm {0}/generated/validation_image_with_item_border/*.jpg'.format(root_path))
     os.system('rm {0}/generated/validation_image_info/*.xml'.format(root_path))
 
-    os.system('rm {0}/generated/test_image/*.png'.format(root_path))
-    os.system('rm {0}/generated/test_image_with_item_border/*.png'.format(root_path))
+    os.system('rm {0}/generated/test_image/*.jpg'.format(root_path))
+    os.system('rm {0}/generated/test_image_with_item_border/*.jpg'.format(root_path))
     os.system('rm {0}/generated/test_image_info/*.xml'.format(root_path))
 
