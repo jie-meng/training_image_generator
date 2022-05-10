@@ -1,4 +1,5 @@
 import os
+import sys
 from src.adb import retrieve_check_images_from_phone
 from src.model_tester import test
 from src.utils import Proc
