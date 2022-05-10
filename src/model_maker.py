@@ -3,7 +3,7 @@ import sys
 import tensorflow as tf
 from tflite_model_maker import model_spec
 from tflite_model_maker import object_detector
-from src.utils import get_label_map
+from src.utils import get_label_map, save_label_map
 
 def make_model(root_path: str):
     assert tf.__version__.startswith('2')
@@ -46,6 +46,7 @@ def make_model(root_path: str):
 
     print('Step 5. Export as a TensorFlow Lite model ...')
     model.export(export_dir = '{0}/generated/model'.format(root_path), tflite_filename = '{0}.tflite'.format(model_name))
+    save_label_map(root_path, model_name, label_map)
 
     print('Step 6. Evaluate the TensorFlow Lite model ...')
     model.evaluate_tflite('{0}/generated/model/{1}.tflite'.format(root_path, model_name), test_data)

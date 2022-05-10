@@ -1,4 +1,5 @@
 import os
+import json
 from typing import List, Dict, Tuple, Callable
 
 class CategoryItems(object):
@@ -134,3 +135,19 @@ def get_label_map(root_path: str) -> Dict[int, str]:
 
     return label_map
 
+def save_label_map(root_path: str, model_name: str, label_map: Dict[int, str]):
+    with open('{0}/generated/model/{1}_label_map.json'.format(root_path, model_name), 'w') as label_name_file:
+        json.dump(label_map, label_name_file, indent = 4)
+
+def load_label_map(root_path: str, model_name: str) -> Dict[int, str]:
+    with open('{0}/generated/model/{1}_label_map.json'.format(root_path, model_name)) as label_name_file:
+        return json.load(label_name_file)
+
+def load_classes(root_path: str, model_name: str) -> List[str]:
+    label_map = load_label_map(root_path, model_name)
+
+    classes = ['???'] * len(label_map)
+    for label_id, label_name in label_map.items():
+        classes[int(label_id)-1] = label_name
+
+    return classes

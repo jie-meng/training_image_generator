@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-from src.utils import get_extracted_object_categories
+from src.utils import get_extracted_object_categories, load_classes
 
 
 def preprocess_image(image_path, input_size):
@@ -108,11 +108,15 @@ def test(root_path: str):
   interpreter = tf.lite.Interpreter(model_path = '{0}/generated/model/{1}'.format(root_path, model))
   interpreter.allocate_tensors()
 
-  classes = get_extracted_object_categories(root_path)
+  model_base_name = os.path.splitext(model)[0]
+  classes = load_classes(root_path, model_base_name)
+  if len(classes) == 0:
+    print('Error: load_classes failed')
+    sys.exit(-1)
 
   check_images = list(filter(lambda x: x.endswith('.jpg'), os.listdir('{0}/generated/check_image'.format(root_path))))
   for image in check_images:
-    check_result_file = '{0}/generated/check_result/{1}_{2}'.format(root_path, os.path.splitext(model)[0], image)
+    check_result_file = '{0}/generated/check_result/{1}_{2}'.format(root_path, model_base_name, image)
     if not os.path.isfile(check_result_file):
       # Run inference and draw detection result on the local copy of the original file
       detection_result_image = run_odt_and_draw_results(
