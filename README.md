@@ -135,3 +135,12 @@ First you should select model for checking.
 
 Then the script will apply model checking with the images under folder _generated/check_image_, result images would under folder _generated/check_result_.
 
+
+## create COCO format predicitons
+
+```
+python3 coco_predictions.py [threshold]
+
+```
+Create a coco format json output which contains the labelled image boundries information generated from trained tflite model. Coco format is consistent with the evaluation tool that be used for checking **AP**(Average Precision) and **MAP**(Mean Average Precision). 'threshold' here is a numeric value between 0 and 1, usually it is ranged from 0.3 to 0.5 by default. For more information about the evaluation tool, please refer to [object detection evaluation tool](https://github.com/rafaelpadilla/review_object_detection_metrics#supported-bounding-box-formats)
+
