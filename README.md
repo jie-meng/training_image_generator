@@ -7,7 +7,7 @@ OS: MacOS
 python3.9+
 
 ```
-brew install ffmpeg imagemagick
+brew install ffmpeg imagemagick libusb
 
 pip3 install --upgrade pip
 pip3 install --use-deprecated=legacy-resolver
