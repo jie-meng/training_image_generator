@@ -65,9 +65,9 @@ If some of the extract images does not fit the size you want, you can delete the
 
 ### 6. Generate training image
 
-First select the objects you want to put into the training images. You can select either single or multiple object.
+First input how many training images you want to generated for each item.
 
-Then input how many images you want to generated.
+Then input the maximize item count in one image.
 
 Training image would be generated under the directory _generated/training_image_.
 
@@ -77,9 +77,9 @@ Training image with item border would be generated under the directory _generate
 
 ### 7. Generate validation image
 
-First select the objects you want to put into the validation images. You can select either single or multiple object.
+First input how many validation images you want to generated for each item.
 
-Then input how many images you want to generated.
+Then input the maximize item count in one image.
 
 Validation image would be generated under the directory _generated/validation_image_.
 
@@ -89,9 +89,9 @@ Validation image with item border would be generated under the directory _genera
 
 ### 8. Generate test image
 
-First select the objects you want to put into the test images. You can select either single or multiple object.
+First input how many test images you want to generated for each item.
 
-Then input how many images you want to generated.
+Then input the maximize item count in one image.
 
 Test image would be generated under the directory _generated/test_image_.
 
